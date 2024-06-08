@@ -1,4 +1,4 @@
-## INF112 Project – *Great Giana Sisters cloned*
+## INF112 Project – *Echoing dreams; A sisters revenge*
 
 **Team:** *Digi-teamet*
 
@@ -8,15 +8,11 @@
 * Kristoffer Sørensen Vestbø
 * Tanja Todorovic
 
-**Referanser:**
-* Gitlab group; https://git.app.uib.no/digi-teamet
-* Gitlab repo; https://git.app.uib.no/digi-teamet/inf112.24v.libgdx-2dgame
-* Trello; https://trello.com/invite/b/ptyx0mfu/ATTI503b4fc5b415b7d7db8f36ee4143dd8835EFB83C/digi-teamet-ggs-clone-board
-* Discord - gruppe #3; https://discord.com/channels/1193905141632483400/1193905141959626854
-
 ## Om spillet
 * Echoing Dreams; A sisters revenge er navnet på spillet. En Great Giana Sisters clone. 
 * Kan styres med piltastene/tastaturet, og hopping skjer med piltast opp. Om man innehar en bullet power-up kan man skyte med space.
+* Aktiver cheat-code med å holde inne "DIGI" tastene.
+* Trykk "n" for å gå til neste brett.
 
 ## Kjøring
 * Kompileres med `mvn package`.
@@ -60,8 +56,8 @@ If you have test failures, and *really* need to build a jar anyway, you can skip
 Git repository branch protection has been activated on 'main' branch so everyone have to use merge requets.
 
 ## Kjente feil
-* På enkelte pcer kan det være en litt spesiell oppførsel når spilleren skal hoppe, ref. tilbakemeldinger fra gruppeleder ifbm. innleveringer.
-Dette skjer bare på utvalgte miljøer, og det har derfor ikke vært rett frem å utbedre.
+* På enkelte pcer kan det være en litt spesiell oppførsel når spilleren skal hoppe. Dette skjer bare på utvalgte miljøer, og det  
+har derfor ikke vært rett frem å utbedre.
 
 # Credits
 
