@@ -4,11 +4,17 @@ title: Home
 
 ## Welcome to Simplest Jekyll demo
 
-dfgsfdggfThis site is very stripped down to minimal content for GitHub Pages and is not suitable for local develpment - you'll typically add a `.gitignore` for example.
+Welcome to the page about Echoing dreams
 
+What is it?
 
-This site is very stripped down to minimal content for GitHub Pages and is not suitable for local develpment - you'll typically add a `.gitignore` for example.
-shit
+Echoing dreams is a Great Giana Sisters inspired 2d game developed during spring semester 2024 in the
+subject INF112 - Systems Engineering at the University of Bergen. The original game was developed for
+the Commodore 64 platform and developers have many good memories of this.
+
+Who made it?
+
+It is developed by DIGI-teamet consisting of the following team members:
 
 Source: [![MichaelCurrin - simplest-jekyll](https://img.shields.io/static/v1?label=MichaelCurrin&message=simplest-jekyll&color=blue&logo=github)](https://github.com/MichaelCurrin/simplest-jekyll)
 
