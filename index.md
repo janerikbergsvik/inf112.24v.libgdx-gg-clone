@@ -14,14 +14,16 @@ the Commodore 64 platform and developers have many good memories of this.
 
 It is developed by DIGI-teamet consisting of the following team members:
 
-Endre Haaland Jorgensen
-Jan Erik Bergsvik
-Kristoffer Soerensen Vestboe
-Tanja Todorovic
+Endre Haaland Jorgensen  
+Jan Erik Bergsvik  
+Kristoffer Soerensen Vestboe  
+Tanja Todorovic  
 
 ## What does it look like?
 
 The main menu
+![Book logo](/assets/mainmenu.png)
+
 The credits screen
 Inside the game
 
@@ -39,7 +41,7 @@ And especically thanks to Brent Aureli (https://www.youtube.com/@BrentAureliCode
 Mario tutorials which have been used as guidance through-out the project.
 
 ## End notes
-Thanks for all your your interest.
+Thanks for your interest.
 
 Please let me know if any issues arise, I can be contacted at bergsvik@alumni.ntnu.no.
 
