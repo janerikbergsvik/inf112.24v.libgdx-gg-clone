@@ -14,23 +14,23 @@ the Commodore 64 platform and developers have many good memories of it.
 
 It was developed by DIGI-teamet consisting of the following team members:
 
-#Endre Haaland Jorgensen  
-#Jan Erik Bergsvik  
-#Kristoffer Soerensen Vestboe  
-#Tanja Todorovic  
+*Endre Haaland Jorgensen  
+*Jan Erik Bergsvik  
+*Kristoffer Soerensen Vestboe  
+*Tanja Todorovic  
 
 ## What does it look like?
 
-#The main menu
+*The main menu
 ![Book logo](/assets/mainmenu.png)
 
-#The credits screen
+*The credits screen
 ![Book logo](/assets/credits.png)
 
-#Inside the game - Level 1
+*Inside the game - Level 1
 ![Book logo](/assets/level1.png)
 
-#Inside the game - Level 2
+*Inside the game - Level 2
 ![Book logo](/assets/level2.png)
 
 ## A gameplay hint
