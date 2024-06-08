@@ -14,10 +14,10 @@ the Commodore 64 platform and developers have many good memories of this.
 
 It is developed by DIGI-teamet consisting of the following team members:
 
-* Endre Håland Jørgensen
-* Jan Erik Bergsvik
-* Kristoffer Sørensen Vestbø
-* Tanja Todorovic
+- Endre Håland Jørgensen
+- Jan Erik Bergsvik
+- Kristoffer Sørensen Vestbø
+- Tanja Todorovic
 
 ## What does it look like?
 
@@ -41,8 +41,6 @@ Mario tutorials which have been used as guidance through-out the project.
 Thanks for all your your interest.
 
 Please let me know if any issues arise, I can be contacted at bergsvik@alumni.ntnu.no.
-
-[![Jan Erik Bergsvik - A DIGI-team member]
 
 Source: [![MichaelCurrin - simplest-jekyll](https://img.shields.io/static/v1?label=MichaelCurrin&message=simplest-jekyll&color=blue&logo=github)](https://github.com/MichaelCurrin/simplest-jekyll)
 
