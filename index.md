@@ -43,7 +43,7 @@ If you want to skip to the next level, then you can just press "n" for next leve
 
 ## Did we do it all ourselves?
 A big thank you to Anya Helene Bagge for giving us the opportunity to develop the game as part of the subject.
-And especically thanks to Brent Aureli (https://www.youtube.com/@BrentAureliCodes) and more specifically his 
+In addition, a big thank you to Brent Aureli (https://www.youtube.com/@BrentAureliCodes) and more specifically his 
 Mario tutorials which have been used as guidance through-out the project.
 
 ## End notes
