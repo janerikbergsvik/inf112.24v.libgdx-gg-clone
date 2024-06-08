@@ -30,7 +30,6 @@ It is developed by DIGI-teamet consisting of the following team members:
 ![Image]({{ site.baseurl }}/images/level1.jpg)
 ![Image]({{ site.baseurl }}/images/level2.jpg)
 
-
 ## A gameplay hint
 The game can be quite difficult to complete. If you want to get off to a good start, then
 you should initiate the cheat code which is readily activated by holding "DIGI" keys down
