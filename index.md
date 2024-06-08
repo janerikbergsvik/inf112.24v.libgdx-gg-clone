@@ -22,16 +22,16 @@ It was developed by DIGI-teamet consisting of the following team members:
 ## What does it look like?
 
 ##main menu
-![Book logo](/assets/mainmenu.png)
+![Book logo](/assets/mainmenuu.png)
 
 ##credits screen
-![Book logo](/assets/credits.png)
+![Book logo](/assets/creditss.png)
 
 ##inside the game - level 1
-![Book logo](/assets/level1.png)
+![Book logo](/assets/level11.png)
 
 ##inside the game - level 2
-![Book logo](/assets/level2.png)
+![Book logo](/assets/level22.png)
 
 ## A gameplay hint
 The game can be quite difficult to complete. If you want to get off to a good start, then
