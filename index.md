@@ -8,24 +8,30 @@ title: Home
 
 Echoing dreams is a Great Giana Sisters inspired 2d game developed during spring semester 2024 in the
 subject INF112 - Systems Engineering at the University of Bergen. The original game was developed for
-the Commodore 64 platform and developers have many good memories of this.
+the Commodore 64 platform and developers have many good memories of it.
 
 ## Who made it?
 
-It is developed by DIGI-teamet consisting of the following team members:
+It was developed by DIGI-teamet consisting of the following team members:
 
-Endre Haaland Jorgensen  
-Jan Erik Bergsvik  
-Kristoffer Soerensen Vestboe  
-Tanja Todorovic  
+#Endre Haaland Jorgensen  
+#Jan Erik Bergsvik  
+#Kristoffer Soerensen Vestboe  
+#Tanja Todorovic  
 
 ## What does it look like?
 
-The main menu
+#The main menu
 ![Book logo](/assets/mainmenu.png)
 
-The credits screen
-Inside the game
+#The credits screen
+![Book logo](/assets/credits.png)
+
+#Inside the game - Level 1
+![Book logo](/assets/level1.png)
+
+#Inside the game - Level 2
+![Book logo](/assets/level2.png)
 
 ## A gameplay hint
 The game can be quite difficult to complete. If you want to get off to a good start, then
