@@ -21,16 +21,16 @@ It was developed by DIGI-teamet consisting of the following team members:
 
 ## What does it look like?
 
-### main menu
+## main menu
 ![Book logo](/assets/mainmenu.png)
 
-### credits screen
+## credits screen
 ![Book logo](/assets/credits.png)
 
-### inside the game - level 1
+## inside the game - level 1
 ![Book logo](/assets/level1.png)
 
-### inside the game - level 2
+## inside the game - level 2
 ![Book logo](/assets/level2.png)
 
 ## A gameplay hint
