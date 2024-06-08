@@ -6,8 +6,9 @@ title: Home
 
 ## What is it?
 
-Echoing dreams is a great giana sisters inspired 2d game developed during spring semester 2024 in the
-subject INF112 - Systems Engineering at the University of Bergen.
+Echoing dreams is a Great Giana Sisters inspired 2d game developed during spring semester 2024 in the
+subject INF112 - Systems Engineering at the University of Bergen. The original game was developed for
+the Commodore 64 platform and developers have many good memories of this.
 
 ## Who made it?
 
@@ -18,9 +19,34 @@ It is developed by DIGI-teamet consisting of the following team members:
 * Kristoffer Sørensen Vestbø
 * Tanja Todorovic
 
+## What does it look like?
 
-This site is very stripped down to minimal content for GitHub Pages and is not suitable for local develpment - you'll typically add a `.gitignore` for example.
+## The main menu
+## The credits screen
+## Inside the game
 
+![Image]({{ site.baseurl }}/images/mainmenu.jpg)
+![Image]({{ site.baseurl }}/images/credits.jpg)
+![Image]({{ site.baseurl }}/images/level1.jpg)
+![Image]({{ site.baseurl }}/images/level2.jpg)
+
+
+## A gameplay hint
+The game can be quite difficult to complete. If you want to get off to a good start, then
+you should initiate the cheat code which is readily activated by holding "DIGI" keys down
+at the same time. This will grant you extra time, lives, health and activate the shooting power-up
+immediately.
+
+If you want to skip to the next level, then you can just press "n" for next level.
+
+## Did we do it all ourselves?
+A big thank you to Anya Helene Bagge for giving us the opportunity to develop the game as part of the subject.
+And especically thanks to Brent Aureli (https://www.youtube.com/@BrentAureliCodes) and more specifically his 
+Mario tutorials which have been used as guidance through-out the project.
+
+Thanks for all your your interest.
+
+Please let me know if any issues arise, I can be contacted at bergsvik@alumni.ntnu.no.
 
 [![Jan Erik Bergsvik - A DIGI-team member]
 
