@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GianaPlayer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gdx-2dgame</a> &gt; <a href="index.source.html" class="el_package">inf112.core.app.Characters</a> &gt; <span class="el_source">GianaPlayer.java</span></div><h1>GianaPlayer.java</h1><pre class="source lang-java linenums">package inf112.core.app.Characters;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
+
+import inf112.core.app.MainGame;
+import inf112.core.app.Model.IGameModel;
+
+/**
+ * The Class GianaPlayer.
+ */
+public class GianaPlayer extends Sprite implements IPlayer{
+    
+    /**
+     * The Enum for player states.
+     */
+<span class="fc" id="L29">    public enum State {FALLING, JUMPING, STANDING, RUNNING};</span>
+
+    // States for player
+    public State currentState;
+    public State previousState;
+    private float stateTimer;
+    private boolean runningRight;
+    private boolean groundContact;
+
+    // World and character body
+    public World world;
+    private Body b2body;
+
+    // Shoot delay counter
+	float shootDelayCounter;
+    float shootResetTimeDelay;       
+    boolean allowedToShoot;
+    boolean isCheatShootActive;
+    
+    // Character textures
+    private TextureRegion gianaStand;
+    private Animation&lt;TextureRegion&gt; gianaRun;
+    private Animation&lt;TextureRegion&gt; gianaJump;	   
+     
+    // Player dead or alive
+    private int health;
+    
+    // Player current speed
+<span class="fc" id="L57">	private float v_factor = 1.0f;</span>
+<span class="fc" id="L58">	private final float speedx = 5.0f;</span>
+<span class="fc" id="L59">	private final float speedy = 8.4f;</span>
+	
+    // Player has completed level
+    boolean hasCompletedLevel;
+    
+    // Power up time_outs/bullet parameters
+<span class="fc" id="L65">    float speedTimeout = 99999;</span>
+<span class="fc" id="L66">    float shootTimeout = 99999;</span>
+<span class="fc" id="L67">	private boolean isShootActive = false;</span>
+	private Array&lt;IProjectile&gt; bullets;
+    
+    /**
+     * Instantiates a new giana player.
+     *
+     * @param world the world
+     * @param atlas the atlas containing textures.
+     * @param bullets the bullets
+     */
+    public GianaPlayer(World world, TextureAtlas atlas, Array&lt;IProjectile&gt; bullets){
+    	// Load Giana textures.
+<span class="fc" id="L79">    	super(atlas.findRegion(&quot;giana_sisters_scaled_transparent&quot;));</span>
+        
+    	// Get Box2D world.
+<span class="fc" id="L82">    	this.world = world;</span>
+    	
+    	// Get bullets
+<span class="fc" id="L85">    	this.bullets = bullets;</span>
+    	
+        // Set default state values
+<span class="fc" id="L88">        currentState = State.STANDING;</span>
+<span class="fc" id="L89">        previousState = State.STANDING;</span>
+<span class="fc" id="L90">        stateTimer = 0;</span>
+<span class="fc" id="L91">        runningRight = true;</span>
+
+        // Health defaults to 10.
+<span class="fc" id="L94">        health = 10;</span>
+        
+        // Player has completed level
+<span class="fc" id="L97">        hasCompletedLevel = false;</span>
+        
+        // Retrieve texture regions for player.
+<span class="fc" id="L100">        getTextureRegions();</span>
+
+        // Create Box2D player.
+<span class="fc" id="L103">        defineEntity();     </span>
+        
+        // Create TextureRegion for standing Giana
+<span class="fc" id="L106">        setBounds(0, 0, 32 / MainGame.PPM, 32 / MainGame.PPM);</span>
+<span class="fc" id="L107">        setRegion(gianaStand);</span>
+        
+        // How often to allow player to shoot bullets                    
+<span class="fc" id="L110">        shootResetTimeDelay = 0.3f;</span>
+<span class="fc" id="L111">        allowedToShoot = true;</span>
+<span class="fc" id="L112">        isCheatShootActive = false;</span>
+<span class="fc" id="L113">    }</span>
+
+	/**
+	 * Gets the texture regions.
+	 *
+	 * @return the texture regions
+	 */
+	private void getTextureRegions() {
+		// Get Giana run frames and add to animation
+<span class="fc" id="L122">        Array&lt;TextureRegion&gt; frames = new Array&lt;TextureRegion&gt;();</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        for(int i = 1; i &lt; 4; i++){</span>
+<span class="fc" id="L124">            frames.add(new TextureRegion(getTexture(), i*32-1, 64, 32, 32));</span>
+        }
+<span class="fc" id="L126">        gianaRun = new Animation&lt;&gt;(0.1f, frames);</span>
+<span class="fc" id="L127">        frames.clear();</span>
+
+        // Get Giana jump frames and add to animation
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        for(int i = 4; i &lt; 6; i++){</span>
+<span class="fc" id="L131">            frames.add(new TextureRegion(getTexture(), i*32-1, 64, 32, 32));</span>
+        }
+<span class="fc" id="L133">        gianaJump = new Animation&lt;&gt;(0.1f, frames);</span>
+<span class="fc" id="L134">        frames.clear();</span>
+
+        // Get Giana standing texture
+<span class="fc" id="L137">        gianaStand = new TextureRegion(getTexture(), 0-1, 64, 32, 32);</span>
+<span class="fc" id="L138">	}</span>
+
+    @Override
+	public boolean runningRight() {
+<span class="fc" id="L142">    	return runningRight;</span>
+    }
+  
+    @Override
+	public void update(float delta_t){
+<span class="fc" id="L147">        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);</span>
+<span class="fc" id="L148">        setRegion(getFrame(delta_t));         </span>
+
+        // Bullet delay counter
+<span class="fc" id="L151">        shootDelayCounter = shootDelayCounter + delta_t;</span>
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">        if (shootDelayCounter &gt;= shootResetTimeDelay) {</span>
+<span class="fc" id="L153">        	allowedToShoot = true;            </span>
+<span class="fc" id="L154">            shootDelayCounter = 0.0f;        </span>
+        }
+<span class="fc" id="L156">    }</span>
+
+    @Override
+	public State getState(){
+<span class="pc bpc" id="L160" title="1 of 6 branches missed.">        if(b2body.getLinearVelocity().y &gt; 0 || (b2body.getLinearVelocity().y &lt; 0 &amp;&amp; previousState == State.JUMPING))</span>
+<span class="fc" id="L161">            return State.JUMPING;</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        else if(b2body.getLinearVelocity().y &lt; 0)</span>
+<span class="fc" id="L163">            return State.FALLING;</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">        else if(b2body.getLinearVelocity().x != 0)</span>
+<span class="fc" id="L165">            return State.RUNNING;</span>
+        else
+<span class="fc" id="L167">            return State.STANDING;</span>
+    }
+
+    @Override
+	public TextureRegion getFrame(float delta_t){
+        // Gets Giana's current state
+<span class="fc" id="L173">        currentState = getState();</span>
+
+        TextureRegion region;
+
+        // Gets the animation keyFrame for current state
+<span class="fc bfc" id="L178" title="All 3 branches covered.">        switch(currentState){</span>
+            case JUMPING:
+<span class="fc" id="L180">                region = gianaJump.getKeyFrame(stateTimer);</span>
+<span class="fc" id="L181">                break;</span>
+            case RUNNING:
+<span class="fc" id="L183">                region = gianaRun.getKeyFrame(stateTimer, true);</span>
+<span class="fc" id="L184">                break;</span>
+            case FALLING:
+            case STANDING:
+            default:
+<span class="fc" id="L188">                region = gianaStand;</span>
+                break;
+        }
+
+        // If player is running left, and texture is facing right, do flip it
+<span class="fc bfc" id="L193" title="All 6 branches covered.">        if((b2body.getLinearVelocity().x &lt; 0 || !runningRight) &amp;&amp; !region.isFlipX()){</span>
+<span class="fc" id="L194">            region.flip(true, false);</span>
+<span class="fc" id="L195">            runningRight = false;</span>
+        }
+        // If player is running left, and texture is facing right, do flip it
+<span class="pc bpc" id="L198" title="1 of 6 branches missed.">        else if((b2body.getLinearVelocity().x &gt; 0 || runningRight) &amp;&amp; region.isFlipX()){</span>
+<span class="fc" id="L199">            region.flip(true, false);</span>
+<span class="fc" id="L200">            runningRight = true;</span>
+        }
+        
+        // If currentstate equals previous state, increase state timer, else reset timer
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        stateTimer = currentState == previousState ? stateTimer + delta_t : 0;</span>
+<span class="fc" id="L205">        previousState = currentState;</span>
+<span class="fc" id="L206">        return region;</span>
+    }
+
+    @Override
+	public void shoot(){			
+    	try {
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">			if (allowedToShoot) {    	</span>
+<span class="pc bpc" id="L213" title="1 of 2 branches missed.">    			if (bullets != null) </span>
+<span class="fc" id="L214">    	    		bullets.add(new Bullet(world, this));</span>
+<span class="fc" id="L215">    			shootDelayCounter = 0.0f;						</span>
+<span class="fc" id="L216">    			allowedToShoot = false;</span>
+    		} }
+    	
+<span class="nc" id="L219">    	catch (Exception e) {</span>
+<span class="nc" id="L220">  		      Gdx.app.log(&quot;Error in GianaPlayer.class while shooting.&quot;, &quot;&quot;);</span>
+<span class="fc" id="L221">  		    } </span>
+<span class="fc" id="L222">	    }</span>
+
+    @Override
+	public void defineEntity(){
+    	// Make Box2d shape of player.
+<span class="fc" id="L227">        BodyDef bdef = new BodyDef();</span>
+<span class="fc" id="L228">        bdef.position.set(752 / MainGame.PPM, 112 / MainGame.PPM);</span>
+<span class="fc" id="L229">        bdef.type = BodyDef.BodyType.DynamicBody;</span>
+<span class="fc" id="L230">        b2body = world.createBody(bdef);</span>
+
+        // Giana fixture
+<span class="fc" id="L233">        FixtureDef fdef = new FixtureDef();</span>
+<span class="fc" id="L234">        CircleShape shape = new CircleShape();</span>
+<span class="fc" id="L235">        shape.setRadius(12/ MainGame.PPM);</span>
+        
+        // Set collision bits
+        // Please note how GameModel.COLLAPSED_BIT is not part of objects that Giana will collide with.
+        // This is key to collapsing objects.
+<span class="fc" id="L240">        fdef.filter.categoryBits = IGameModel.GIANA_BIT;</span>
+<span class="fc" id="L241">        fdef.filter.maskBits = IGameModel.OBJECT_BIT | IGameModel.COIN_BIT | IGameModel.POWERUP_BIT | IGameModel.GROUND_BIT </span>
+        	| IGameModel.EMPTY_BIT | IGameModel.ENEMY_BIT | IGameModel.ENEMY_HEAD_BIT | IGameModel.POPUP_ITEM_BIT | IGameModel.FINISH_GAME_BIT;
+                
+<span class="fc" id="L244">        fdef.shape = shape;</span>
+<span class="fc" id="L245">        b2body.createFixture(fdef).setUserData(this);</span>
+        
+        // Make Box2d shape above Giana head for contact modelling.
+<span class="fc" id="L248">        EdgeShape hair = new EdgeShape();</span>
+<span class="fc" id="L249">        Vector2 from_pos = new Vector2(-8 / MainGame.PPM, (12 / MainGame.PPM));</span>
+<span class="fc" id="L250">        Vector2 to_pos = new Vector2(8 / MainGame.PPM, (12 / MainGame.PPM));</span>
+        
+        // Set edge from v1 to v2.
+<span class="fc" id="L253">        hair.set(from_pos, to_pos);      </span>
+<span class="fc" id="L254">        fdef.shape = hair;</span>
+<span class="fc" id="L255">        fdef.isSensor = true;</span>
+<span class="fc" id="L256">        b2body.createFixture(fdef).setUserData(&quot;hair&quot;);</span>
+
+        // Make Box2d shape below Giana feet for contact modelling.
+<span class="fc" id="L259">        EdgeShape feet = new EdgeShape();</span>
+<span class="fc" id="L260">        from_pos = new Vector2(-8 / MainGame.PPM, (-12 / MainGame.PPM));</span>
+<span class="fc" id="L261">        to_pos = new Vector2(8 / MainGame.PPM, (-12 / MainGame.PPM));</span>
+        
+        // Set edge from v1 to v2.
+<span class="fc" id="L264">        feet.set(from_pos, to_pos);      </span>
+<span class="fc" id="L265">        fdef.shape = feet;</span>
+<span class="fc" id="L266">        fdef.isSensor = true;</span>
+<span class="fc" id="L267">        b2body.createFixture(fdef).setUserData(&quot;feet&quot;);</span>
+<span class="fc" id="L268">    }        </span>
+
+    @Override
+	public void draw(Batch batch){
+<span class="fc" id="L272">        super.draw(batch);</span>
+<span class="fc" id="L273">    }</span>
+
+	@Override
+	public void setGroundContact(boolean groundContact) {
+<span class="fc" id="L277">		this.groundContact = groundContact;		</span>
+<span class="fc" id="L278">	}    </span>
+
+	@Override
+	public boolean getGroundContact() {
+<span class="fc" id="L282">		return this.groundContact;			</span>
+	}    
+	
+	@Override
+	public void applyHealthChange(int change) {
+<span class="fc" id="L287">		health = health + change;</span>
+<span class="fc bfc" id="L288" title="All 2 branches covered.">		if (health &lt;= 0) {</span>
+<span class="fc" id="L289">			health = 0;</span>
+		}
+<span class="fc" id="L291">	}</span>
+	
+	@Override
+	public boolean setCompletedLevel(boolean status) {
+<span class="fc" id="L295">		hasCompletedLevel = status;</span>
+<span class="fc" id="L296">		return hasCompletedLevel;</span>
+	}
+	
+	@Override
+	public boolean hasCompletedLevel() {
+<span class="fc" id="L301">		return hasCompletedLevel; </span>
+	}
+	
+	@Override
+	public boolean isDead() {
+<span class="fc bfc" id="L306" title="All 2 branches covered.">		if (health &lt;= 0) {</span>
+<span class="fc" id="L307">			return true;</span>
+		}
+		
+<span class="fc" id="L310">		return false;		</span>
+	}
+	
+	@Override
+	public void setSpeedFactor(float factor) {
+<span class="fc" id="L315">		v_factor = factor;</span>
+<span class="fc" id="L316">	}</span>
+	
+	@Override
+	public float getSpeedFactor() {
+<span class="fc" id="L320">		return v_factor;</span>
+	}
+	
+	@Override
+	public void setShootActive(boolean value) {
+<span class="fc" id="L325">		isShootActive = value;		</span>
+<span class="fc" id="L326">	}</span>
+	
+	@Override
+	public boolean isShootActive() {
+<span class="fc" id="L330">		return isShootActive;			</span>
+	}
+	
+	@Override
+	public float getSpeedX() {
+<span class="fc" id="L335">		return speedx;</span>
+	}
+
+	@Override
+	public float getSpeedY() {
+<span class="fc" id="L340">		return speedy;</span>
+	}
+
+	@Override
+	public void setDoubleLightningTimeout(float timeout) {
+<span class="fc" id="L345">		speedTimeout = timeout;</span>
+<span class="fc" id="L346">	}</span>
+	
+	@Override
+	public float getDoubleLightningTimeout() {
+<span class="fc" id="L350">		return speedTimeout;</span>
+	}
+
+	@Override
+	public void setSingleLightningTimeout(float timeout) {
+<span class="fc" id="L355">		shootTimeout = timeout;</span>
+<span class="fc" id="L356">	}</span>
+
+	@Override
+	public float getSingleLightningTimeout() {
+<span class="fc" id="L360">		return shootTimeout;</span>
+	}
+
+	public Body getBody() {
+<span class="fc" id="L364">		return b2body;</span>
+	}
+
+	@Override
+	public void moveLeft() {
+<span class="fc bfc" id="L369" title="All 2 branches covered.">		if (b2body.getLinearVelocity().x &gt;= -2) {			</span>
+<span class="fc" id="L370">			b2body.applyLinearImpulse(new Vector2(-getSpeedX()*getSpeedFactor(), 0), b2body.getWorldCenter(), true);</span>
+		}
+<span class="fc" id="L372">	}</span>
+	
+	@Override
+	public void moveRight() {
+<span class="pc bpc" id="L376" title="1 of 2 branches missed.">	   	if (b2body.getLinearVelocity().x &lt;= 2) {</span>
+<span class="fc" id="L377">	   		b2body.applyLinearImpulse(new Vector2(getSpeedX()*getSpeedFactor(), 0), b2body.getWorldCenter(), true);        	</span>
+	   }
+<span class="fc" id="L379">	}</span>
+
+	@Override
+	public void moveUp() {
+<span class="pc bpc" id="L383" title="1 of 2 branches missed.">    	if (getGroundContact()) {</span>
+<span class="fc" id="L384">    		b2body.applyLinearImpulse(new Vector2(0,getSpeedY()*getSpeedFactor()), b2body.getWorldCenter(), true);	</span>
+    	}            		
+<span class="fc" id="L386">	}</span>
+
+	@Override
+	public void moveDown() {
+<span class="pc bpc" id="L390" title="1 of 2 branches missed.">     	if (getGroundContact()) {</span>
+<span class="fc" id="L391">     		b2body.setLinearVelocity(new Vector2(0,0));</span>
+    	}            
+		
+<span class="fc" id="L394">	}</span>
+
+	@Override
+	public boolean isCheatShootActive() {
+<span class="nc" id="L398">		return isCheatShootActive;</span>
+	}
+
+	@Override
+	public void setCheatShootActive(boolean value) {
+<span class="nc" id="L403">		isCheatShootActive = value;		</span>
+<span class="nc" id="L404">	}	</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

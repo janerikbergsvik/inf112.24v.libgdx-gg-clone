@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OptionsScreen.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gdx-2dgame</a> &gt; <a href="index.source.html" class="el_package">inf112.core.app.View.MenuScreens</a> &gt; <span class="el_source">OptionsScreen.java</span></div><h1>OptionsScreen.java</h1><pre class="source lang-java linenums">package inf112.core.app.View.MenuScreens;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import inf112.core.app.MainGame;
+import inf112.core.app.Helper.IAudio;
+import inf112.core.app.Helper.ILevelManager;
+import inf112.core.app.View.GameScreens.IHud;
+
+/**
+ * The Class OptionsScreen.
+ */
+public class OptionsScreen extends AbstractScreen implements Screen {	 
+    // Width and height to fit fonts to screen.
+	static final int WIDTH = 800;
+	static final int HEIGHT = 900;
+	
+	// Fields related to table
+	private Table table;
+	private Label titleLabel; 
+	private Label musicLabel;
+	private Label soundLabel;
+	private Label speedLabel;
+	private Label musicCheckboxLabel;
+	private Label soundCheckboxLabel;
+	private CheckBox musicCheckbox;
+	private Slider musicSlider;
+	private CheckBox soundCheckbox;
+	private Slider soundSlider;
+	private Slider speedSlider;
+	private TextButton backButton;
+	
+	// Levels, hud and audio
+	private ILevelManager levels;
+	private IHud hud;
+	private IAudio audio;
+	
+	/**
+	 * Instantiates a new options screen.
+	 *
+	 * @param game the game
+	 * @param batch the batch
+	 * @param levels the levels
+	 * @param hud the hud
+	 * @param audio the audio
+	 */
+	public OptionsScreen(MainGame game, Batch batch, ILevelManager levels, IHud hud, IAudio audio) {
+<span class="fc" id="L59">		super(game, batch, WIDTH, HEIGHT);</span>
+<span class="fc" id="L60">		this.levels = levels;</span>
+<span class="fc" id="L61">		this.hud = hud;</span>
+<span class="fc" id="L62">		this.audio = audio;</span>
+		
+<span class="fc" id="L64">        setupTable();        	</span>
+<span class="fc" id="L65">	}</span>
+	
+	@Override
+	public void show() {	        
+        // Let stage control user input.
+<span class="nc" id="L70">    	Gdx.input.setInputProcessor(stage);</span>
+
+        //Add table to stage
+<span class="nc" id="L73">        stage.addActor(table);</span>
+
+        // Render stage. 
+<span class="nc" id="L76">        stage.act();</span>
+<span class="nc" id="L77">        stage.draw();         </span>
+<span class="nc" id="L78">	}</span>
+
+	/**
+	 * Setup table.
+	 */
+	protected void setupTable() {
+		// New table to fill with buttons
+<span class="fc" id="L85">    	table = new Table();</span>
+        
+    	// Adjust table.
+<span class="fc" id="L88">    	table.setFillParent(true);</span>
+    	
+    	// Set text on labels.
+<span class="fc" id="L91">        titleLabel = new Label( &quot;Options&quot;, skin, &quot;big&quot;);</span>
+<span class="fc" id="L92">      	musicCheckboxLabel = new Label(&quot;Music on/off&quot;, skin, &quot;big&quot;);</span>
+<span class="fc" id="L93">        musicLabel = new Label(&quot;Music volume&quot;, skin, &quot;big&quot;);</span>
+<span class="fc" id="L94">        soundCheckboxLabel = new Label(&quot;Sound on/off&quot;, skin, &quot;big&quot;);  	</span>
+<span class="fc" id="L95">    	soundLabel = new Label(&quot;Sound volume&quot;, skin, &quot;big&quot;);</span>
+<span class="fc" id="L96">    	speedLabel = new Label(&quot;Game speed&quot;, skin, &quot;big&quot;);</span>
+    	
+        // Music on/off checkbox
+<span class="fc" id="L99">    	musicCheckbox = new CheckBox(null, skin);</span>
+<span class="fc" id="L100">    	musicCheckbox.setChecked(game.getSettings().isMusicActive());</span>
+<span class="fc" id="L101">    	musicCheckbox.addListener(new ChangeListener() {</span>
+    	    @Override
+    	    public void changed(ChangeEvent event, Actor actor) {
+<span class="nc" id="L104">    	              	game.getSettings().setMusicActive(musicCheckbox.isChecked());</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">    	              	if (musicCheckbox.isChecked()) {</span>
+<span class="nc" id="L106">    	              		Gdx.app.log(&quot;startMusic()&quot;, &quot;&quot;);</span>
+<span class="nc" id="L107">    	              		game.getAudio().startMusic();</span>
+    	              	}
+    	              	else {
+<span class="nc" id="L110">    	              		Gdx.app.log(&quot;stopMusic()&quot;, &quot;&quot;);</span>
+<span class="nc" id="L111">    	              		game.getAudio().stopMusic();</span>
+    	              	}  
+<span class="nc" id="L113">   	    }</span>
+    	});	
+
+    	// Music volume slider
+<span class="fc" id="L117">    	musicSlider = new Slider( 0f, 1f, 0.05f, false, skin);</span>
+<span class="fc" id="L118">    	musicSlider.setValue(game.getSettings().getMusicVolume());</span>
+<span class="fc" id="L119">    	musicSlider.addListener(new ChangeListener(){</span>
+    	  		@Override
+    			public void changed(ChangeEvent event, Actor actor) {
+<span class="nc" id="L122">    	  			game.getSettings().setMusicVolume(musicSlider.getValue());</span>
+<span class="nc" id="L123">    	  			game.getAudio().updateFromSettings();</span>
+<span class="nc" id="L124">    		}</span>
+    	});
+
+        // Sound on/off checkbox
+<span class="fc" id="L128">    	soundCheckbox = new CheckBox(null, skin);</span>
+<span class="fc" id="L129">    	soundCheckbox.setChecked(game.getSettings().isSoundActive());</span>
+<span class="fc" id="L130">    	soundCheckbox.addListener(new ChangeListener() {</span>
+    	    @Override
+    	    public void changed(ChangeEvent event, Actor actor) {
+<span class="nc" id="L133">    	              	game.getSettings().setSoundActive(soundCheckbox.isChecked());</span>
+<span class="nc" id="L134">    	              	game.getAudio().updateFromSettings();</span>
+<span class="nc" id="L135">    	    }</span>
+    	});	
+
+    	// Sound volume slider
+<span class="fc" id="L139">    	soundSlider = new Slider(0f, 1f, 0.05f, false, skin);</span>
+<span class="fc" id="L140">    	soundSlider.setValue(game.getSettings().getSoundVolume());</span>
+<span class="fc" id="L141">    	soundSlider.addListener(new ChangeListener() {</span>
+    	  		@Override
+    			public void changed(ChangeEvent event, Actor actor) {
+<span class="nc" id="L144">    	  			game.getSettings().setSoundVolume(soundSlider.getValue());</span>
+<span class="nc" id="L145">    	  			game.getAudio().updateFromSettings();</span>
+<span class="nc" id="L146">    		}</span>
+    	});
+
+    	// Speed slider
+<span class="fc" id="L150">    	speedSlider = new Slider(1f, 64f, 1f, false, skin);</span>
+<span class="fc" id="L151">    	speedSlider.setValue(game.getSettings().getGameSpeed());</span>
+<span class="fc" id="L152">    	speedSlider.addListener(new ChangeListener() {</span>
+    	  		@Override
+    			public void changed(ChangeEvent event, Actor actor) {
+<span class="nc" id="L155">    	  			game.getSettings().setGameSpeed(speedSlider.getValue());</span>
+<span class="nc" id="L156">    	  			game.setSpeed(speedSlider.getValue());</span>
+<span class="nc" id="L157">    		}</span>
+    	});
+
+    	// Add back button
+<span class="fc" id="L161">    	backButton = new TextButton(&quot;Back&quot;, skin); </span>
+  
+    	// Make and style table.
+<span class="fc" id="L164">      	table.add(titleLabel).colspan(2).expandX();</span>
+<span class="fc" id="L165">      	table.row().pad(10,0,0,10);</span>
+<span class="fc" id="L166">    	table.add(speedLabel).left().expandX();</span>
+<span class="fc" id="L167">    	table.add(speedSlider).fillX().expandX();</span>
+<span class="fc" id="L168">    	table.row().pad(10,0,0,10);</span>
+<span class="fc" id="L169">    	table.add(musicCheckboxLabel).left().expandX();</span>
+<span class="fc" id="L170">    	table.add(musicCheckbox).expandX();</span>
+<span class="fc" id="L171">    	table.row().pad(10,0,0,10);</span>
+<span class="fc" id="L172">    	table.add(musicLabel).left().expandX();</span>
+<span class="fc" id="L173">    	table.add(musicSlider).fillX().expandX();</span>
+<span class="fc" id="L174">    	table.row().pad(10,0,0,10);</span>
+<span class="fc" id="L175">    	table.add(soundCheckboxLabel).left().expandX();</span>
+<span class="fc" id="L176">    	table.add(soundCheckbox).expandX();</span>
+<span class="fc" id="L177">    	table.row().pad(10,0,0,10);</span>
+<span class="fc" id="L178">    	table.add(soundLabel).left().expandX();</span>
+<span class="fc" id="L179">    	table.add(soundSlider).fillX().expandX();</span>
+<span class="fc" id="L180">    	table.row().pad(10,0,0,10);</span>
+<span class="fc" id="L181">    	table.add(backButton).colspan(2).expandX();</span>
+          
+
+    	// Add listeners to back button.
+<span class="fc" id="L185">    	backButton.addListener(new ClickListener(){</span>
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+<span class="nc" id="L188">          		game.setScreen(new MainScreen(game, batch, levels, hud, audio));</span>
+<span class="nc" id="L189">          	    Gdx.app.log(&quot;GG-Clone&quot;, &quot;back clicked.&quot;);</span>
+<span class="nc" id="L190">            }</span>
+            });
+<span class="fc" id="L192">	}</span>
+
+	@Override
+	public void render(float delta) {
+		  // Clear screen
+<span class="nc" id="L197">	      Gdx.gl.glClearColor(0, 0, 0, 0);</span>
+<span class="nc" id="L198">	      Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);</span>
+	      	      
+	      // Render stage
+<span class="nc" id="L201">	      stage.act();</span>
+<span class="nc" id="L202">	      stage.draw();</span>
+<span class="nc" id="L203">	}</span>
+
+	@Override
+	public void resize(int width, int height) {
+		  // Resize event
+<span class="fc" id="L208">	      viewport.update(width,height);</span>
+<span class="fc" id="L209">	      cam.position.set(cam.viewportWidth/2,cam.viewportHeight/2,0);</span>
+<span class="fc" id="L210">		  cam.update();</span>
+<span class="fc" id="L211">	}</span>
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+<span class="fc" id="L216">	}</span>
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+<span class="fc" id="L221">	}</span>
+
+	@Override
+	public void hide() {
+		// TODO Auto-generated method stub
+<span class="fc" id="L226">	}</span>
+
+	@Override
+	public void dispose() {
+		// Dispose of skin and atlas.
+<span class="fc" id="L231">	    skin.dispose();</span>
+<span class="fc" id="L232">        atlas.dispose();</span>
+<span class="fc" id="L233">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StageIntroScreen.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gdx-2dgame</a> &gt; <a href="index.source.html" class="el_package">inf112.core.app.View.GameScreens</a> &gt; <span class="el_source">StageIntroScreen.java</span></div><h1>StageIntroScreen.java</h1><pre class="source lang-java linenums">package inf112.core.app.View.GameScreens;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import inf112.core.app.MainGame;
+import inf112.core.app.Helper.GameLabelStyler;
+import inf112.core.app.Helper.IAudio;
+import inf112.core.app.Helper.ILevelManager;
+
+/**
+ * The Class StageIntroScreen.
+ */
+public class StageIntroScreen implements Screen {
+	// Initialization of variables.
+	private MainGame game;
+	private Viewport viewport;
+	private OrthographicCamera cam;
+	private Stage stage;
+	private Batch batch;
+	  
+	// Level manager
+	private ILevelManager levels;
+	
+    // Width and height to fit fonts to screen.
+	static final int WIDTH = 800;
+	static final int HEIGHT = 900;
+	
+	// Time counter
+<span class="fc" id="L38">	private float timeCounter = 0;</span>
+<span class="fc" id="L39">	private float timeDelay = 3.0f;</span>
+	
+	// Fields related to table
+	private Table table;
+	
+	// Audio and hud
+	private IAudio audio;
+	private IHud hud;
+	   
+	/**
+	 * Instantiates a new stage intro screen.
+	 *
+	 * @param game the game
+	 * @param batch the batch
+	 * @param levels the levels
+	 * @param hud the hud
+	 * @param audio the audio
+	 */
+<span class="fc" id="L57">	public StageIntroScreen(MainGame game, Batch batch, ILevelManager levels, IHud hud, IAudio audio) {</span>
+		// Retrieve instance of GameLoader, batch and levels.
+<span class="fc" id="L59">		this.game = game;</span>
+<span class="fc" id="L60">		this.batch = batch;</span>
+<span class="fc" id="L61">		this.levels = levels;</span>
+<span class="fc" id="L62">		this.audio = audio;</span>
+<span class="fc" id="L63">		this.hud = hud;</span>
+
+		// Setup table.
+<span class="fc" id="L66">		setupTable();</span>
+<span class="fc" id="L67">	}</span>
+	
+	@Override
+	public void show() {	        
+	    // Initialize camera and set viewport.
+<span class="nc" id="L72">	    cam = new OrthographicCamera();</span>
+<span class="nc" id="L73">        viewport = new FitViewport(WIDTH, HEIGHT, cam);</span>
+<span class="nc" id="L74">        viewport.apply();</span>
+<span class="nc" id="L75">        cam.position.set(cam.viewportWidth / 2, cam.viewportHeight / 2, 0);</span>
+<span class="nc" id="L76">		cam.update();</span>
+
+		// Use stage for user interface together with listeners.		
+<span class="nc" id="L79">		stage = new Stage(viewport, batch);    </span>
+        
+		// Let stage control user input.
+<span class="nc" id="L82">        Gdx.input.setInputProcessor(stage);</span>
+        
+        //Add table to stage
+<span class="nc" id="L85">        stage.addActor(table);</span>
+
+        // Render stage. 
+<span class="nc" id="L88">        stage.act();</span>
+<span class="nc" id="L89">        stage.draw();         </span>
+<span class="nc" id="L90">	}</span>
+
+	/**
+	 * Setup table.
+	 */
+	private void setupTable() {
+		// New table to fill with buttons
+<span class="fc" id="L97">    	table = new Table();</span>
+        
+    	// Adjust table.
+<span class="fc" id="L100">    	table.setFillParent(true);</span>
+    	  
+    	  // Get great Giana Sisters TrueType font.
+<span class="fc" id="L103">        Label.LabelStyle labelStyle = GameLabelStyler.getLabelStyle(&quot;truetypefonts/giana/Giana.ttf&quot;, 36, 227, 230, 106);</span>
+        
+	    // Set debug lines.
+    	//table.setDebug(true); 
+    	
+	    // Add labels to the table  
+<span class="fc" id="L109">        Label label1 = new Label(String.format(&quot;STAGE %01d&quot;, levels.getCurrentLevelNumber()), labelStyle);</span>
+<span class="fc" id="L110">	    Label label2 = new Label(&quot; &quot;,labelStyle);</span>
+<span class="fc" id="L111">	    Label label3 = new Label(&quot;GET READY !&quot;,labelStyle);</span>
+<span class="fc" id="L112">		label1.setAlignment(Align.center);</span>
+<span class="fc" id="L113">		label2.setAlignment(Align.center);</span>
+<span class="fc" id="L114">		label3.setAlignment(Align.center);</span>
+	    
+<span class="fc" id="L116">		table.row();				</span>
+<span class="fc" id="L117">		table.add(label1);</span>
+<span class="fc" id="L118">		table.row();				</span>
+<span class="fc" id="L119">		table.add(label2);</span>
+<span class="fc" id="L120">		table.row();				</span>
+<span class="fc" id="L121">		table.add(label3);</span>
+<span class="fc" id="L122">	}</span>
+
+	@Override
+	public void render(float delta) {
+		  // Clear screen
+<span class="nc" id="L127">	      Gdx.gl.glClearColor(0, 0, 0, 0);</span>
+<span class="nc" id="L128">	      Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);</span>
+	      
+	      // Render stage
+<span class="nc" id="L131">	      stage.act();</span>
+<span class="nc" id="L132">	      stage.draw();</span>
+	      
+	      // Update timer and switch when introduction has been
+	      // on screen for 5 seconds.
+<span class="nc" id="L136">	      timeCounter += Gdx.graphics.getDeltaTime();</span>
+	    	
+	      // If reached 1 second, then count 1 second down.
+<span class="nc bnc" id="L139" title="All 2 branches missed.">	      if (timeCounter &gt;= timeDelay) {</span>
+<span class="nc" id="L140">	    		timeCounter = 0;</span>
+<span class="nc" id="L141">	    		game.setScreen(new PlayScreen(game, audio, levels, hud, batch));	    		</span>
+	    	 	}
+<span class="nc" id="L143">	}</span>
+
+	@Override
+	public void resize(int width, int height) {
+		  // Resize event
+<span class="nc" id="L148">	      viewport.update(width,height);</span>
+<span class="nc" id="L149">	      cam.position.set(cam.viewportWidth/2,cam.viewportHeight/2,0);</span>
+<span class="nc" id="L150">		  cam.update();</span>
+<span class="nc" id="L151">	}</span>
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+<span class="fc" id="L156">	}</span>
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+<span class="fc" id="L161">	}</span>
+
+	@Override
+	public void hide() {
+		// TODO Auto-generated method stub
+<span class="fc" id="L166">	}</span>
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+<span class="fc" id="L171">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

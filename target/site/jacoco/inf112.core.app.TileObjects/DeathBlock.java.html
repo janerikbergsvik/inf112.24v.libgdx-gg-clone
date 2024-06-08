@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeathBlock.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gdx-2dgame</a> &gt; <a href="index.source.html" class="el_package">inf112.core.app.TileObjects</a> &gt; <span class="el_source">DeathBlock.java</span></div><h1>DeathBlock.java</h1><pre class="source lang-java linenums">package inf112.core.app.TileObjects;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.World;
+
+import inf112.core.app.Characters.IPlayer;
+import inf112.core.app.Helper.IAudio;
+import inf112.core.app.Model.IGameModel;
+import inf112.core.app.View.GameScreens.IHud;
+
+/**
+ * The Class DeathBlock.
+ */
+public class DeathBlock extends TileObject{
+	// Damage that DeatBlock causes.
+<span class="fc" id="L18">	private int damage = -100;</span>
+	
+    /**
+     * Instantiates a new death block.
+     *
+     * @param hud the hud
+     * @param player the player
+     * @param world the box2d world
+     * @param map the map
+     * @param audio the audio
+     * @param bounds the bounds
+     */
+    public DeathBlock(IHud hud, IPlayer player, World world, TiledMap map, IAudio audio, Rectangle bounds){
+<span class="fc" id="L31">    	super(hud, player, world, map, audio, bounds);</span>
+<span class="fc" id="L32">        fixture.setUserData(this);</span>
+<span class="fc" id="L33">    }</span>
+
+	@Override
+	public void onHairContact() {
+<span class="fc" id="L37">		player.applyHealthChange(damage);		</span>
+<span class="fc" id="L38">		Gdx.app.log(&quot;Deathblock-Hair&quot;, &quot;Contact&quot;);</span>
+<span class="fc" id="L39">	}</span>
+
+	@Override
+	public void onPlayerContact() {
+<span class="fc" id="L43">		player.applyHealthChange(damage);		</span>
+<span class="fc" id="L44">		Gdx.app.log(&quot;Deathblock-Player&quot;, &quot;Contact&quot;);</span>
+<span class="fc" id="L45">	}</span>
+
+	@Override
+	public void onFeetContact() {
+<span class="fc" id="L49">		player.setGroundContact(true);		</span>
+<span class="fc" id="L50">		player.applyHealthChange(damage);		</span>
+<span class="fc" id="L51">		Gdx.app.log(&quot;DeathBlock-Feet&quot;, &quot;Contact&quot;);</span>
+<span class="fc" id="L52">	}</span>
+
+	@Override
+	public void onFeetContactEnd() {
+<span class="fc" id="L56">		player.setGroundContact(false);		</span>
+<span class="fc" id="L57">		Gdx.app.log(&quot;Ground-Feet&quot;, &quot;Contact ended.&quot;);		</span>
+<span class="fc" id="L58">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

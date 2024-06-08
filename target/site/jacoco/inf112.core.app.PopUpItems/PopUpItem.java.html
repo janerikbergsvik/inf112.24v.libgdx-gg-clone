@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PopUpItem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gdx-2dgame</a> &gt; <a href="index.source.html" class="el_package">inf112.core.app.PopUpItems</a> &gt; <span class="el_source">PopUpItem.java</span></div><h1>PopUpItem.java</h1><pre class="source lang-java linenums">package inf112.core.app.PopUpItems;
+
+import java.util.ArrayList;
+import java.util.Random;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
+
+import inf112.core.app.MainGame;
+import inf112.core.app.Characters.IPlayer;
+import inf112.core.app.Model.GameModel;
+import inf112.core.app.Model.IGameModel;
+import inf112.core.app.View.GameScreens.IHud;
+import inf112.core.app.View.GameScreens.PlayScreen;
+
+/**
+ * The Class PopUpItem.
+ */
+
+public abstract class PopUpItem extends Sprite implements IPopUpItem {
+	protected PlayScreen screen;
+	protected World world;
+	protected Vector2 velocity;
+	protected boolean scheduledForRemoval;
+	protected boolean deadWorldPopUpItem;
+	protected Body b2body;
+	protected float stateTime;
+    protected Animation&lt;TextureRegion&gt; itemAnimation;
+    protected Array&lt;TextureRegion&gt; frames;
+    protected GameModel model;
+    protected int direction;
+	protected IPlayer player;
+	protected TextureAtlas powerups;
+	protected IHud hud;
+    
+	/**
+	 * Instantiates a new pop up item.
+	 *
+	 * @param player the player
+	 * @param world the world
+	 * @param hud the hud
+	 * @param powerups the powerups texture atlas.
+	 * @param x the x
+	 * @param y the y
+	 */
+<span class="fc" id="L55">	public PopUpItem(IPlayer player, World world, IHud hud, TextureAtlas powerups, float x, float y) {</span>
+<span class="fc" id="L56">		this.player = player;</span>
+<span class="fc" id="L57">		this.world = world;</span>
+<span class="fc" id="L58">		this.hud = hud;</span>
+<span class="fc" id="L59">		this.powerups = powerups;	</span>
+		
+<span class="fc" id="L61">		setPosition(x, y);</span>
+<span class="fc" id="L62">		setBounds(getX(), getY(), 32 / MainGame.PPM, 32 /MainGame.PPM);</span>
+<span class="fc" id="L63">		defineEntity();</span>
+<span class="fc" id="L64">		scheduledForRemoval = false;</span>
+<span class="fc" id="L65">		deadWorldPopUpItem = false;</span>
+<span class="fc" id="L66">		direction = getRandomDirection();</span>
+<span class="fc" id="L67">		velocity = new Vector2(direction*4f, -9.81f);</span>
+<span class="fc" id="L68"> 	}</span>
+
+	@Override
+	public abstract void use();
+	
+	@Override
+	public void draw(Batch batch) {
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">		if(!deadWorldPopUpItem) {</span>
+<span class="nc" id="L76">			super.draw(batch);</span>
+		}
+<span class="fc" id="L78">	}</span>
+	
+	@Override
+	public void destroy() {
+<span class="fc" id="L82">		scheduledForRemoval = true;</span>
+<span class="fc" id="L83">	}</span>
+	
+	@Override
+	public void defineEntity() {
+		// Make Box2d shape.
+<span class="fc" id="L88">        BodyDef bdef = new BodyDef();</span>
+<span class="fc" id="L89">        bdef.position.set(getX(), getY());</span>
+<span class="fc" id="L90">        bdef.type = BodyDef.BodyType.DynamicBody;</span>
+<span class="fc" id="L91">        b2body = world.createBody(bdef);</span>
+
+        // Fixture
+<span class="fc" id="L94">        FixtureDef fdef = new FixtureDef();</span>
+<span class="fc" id="L95">        CircleShape shape = new CircleShape();</span>
+<span class="fc" id="L96">        shape.setRadius(16/ MainGame.PPM);</span>
+       
+<span class="fc" id="L98">        fdef.filter.categoryBits = IGameModel.POPUP_ITEM_BIT;</span>
+<span class="fc" id="L99">        fdef.filter.maskBits = IGameModel.OBJECT_BIT | IGameModel.COIN_BIT | IGameModel.POWERUP_BIT </span>
+        		| IGameModel.EMPTY_BIT | IGameModel.GIANA_BIT | IGameModel.GROUND_BIT | IGameModel.ENEMY_BIT | IGameModel.ENEMY_HEAD_BIT | IGameModel.POPUP_ITEM_BIT; 
+ 
+<span class="fc" id="L102">        fdef.shape = shape;</span>
+<span class="fc" id="L103">        b2body.createFixture(fdef).setUserData(this);		</span>
+<span class="fc" id="L104">	}</span>
+	
+	@Override
+	public void update(float dt) {
+<span class="pc bpc" id="L108" title="1 of 4 branches missed.">		if (scheduledForRemoval &amp;&amp; !deadWorldPopUpItem) {</span>
+<span class="fc" id="L109">			world.destroyBody(b2body);</span>
+<span class="fc" id="L110">			deadWorldPopUpItem = true;</span>
+		}
+<span class="fc" id="L112">	}</span>
+	
+    @Override
+	public void reverseVelocity(boolean x, boolean y){
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if(x)</span>
+<span class="fc" id="L117">            velocity.x = -velocity.x;</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if(y)</span>
+<span class="fc" id="L119">            velocity.y = -velocity.y;</span>
+<span class="fc" id="L120">    }</span>
+    
+
+	@Override
+	public int getRandomDirection() {
+<span class="fc" id="L125">	    Random randomizer = new Random();</span>
+<span class="fc" id="L126">	    ArrayList&lt;Integer&gt; classList = new ArrayList&lt;&gt;();</span>
+	    
+<span class="fc" id="L128">	    classList.add(1);</span>
+<span class="fc" id="L129">	    classList.add(-1);</span>
+	    
+<span class="fc" id="L131">        int index = randomizer.nextInt(classList.size());</span>
+        
+<span class="fc" id="L133">        return classList.get(index);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

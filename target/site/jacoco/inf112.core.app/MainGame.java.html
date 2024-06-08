@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainGame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gdx-2dgame</a> &gt; <a href="index.source.html" class="el_package">inf112.core.app</a> &gt; <span class="el_source">MainGame.java</span></div><h1>MainGame.java</h1><pre class="source lang-java linenums">package inf112.core.app;
+
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import inf112.core.app.Helper.Audio;
+import inf112.core.app.Helper.GameSettings;
+import inf112.core.app.Helper.IAudio;
+import inf112.core.app.Helper.IGameSettings;
+import inf112.core.app.Helper.ILevelManager;
+import inf112.core.app.Helper.LevelManager;
+import inf112.core.app.View.GameScreens.Hud;
+import inf112.core.app.View.MenuScreens.MainScreen;
+
+/**
+ * The Class MainGame.
+ */
+<span class="fc" id="L21">public class MainGame extends Game {</span>
+	// Pixels per meter conversion
+	public static float PPM;
+	
+	// Game variables.
+	private Batch batch;
+	private IAudio audio;
+	private Screen currentScreen;
+	private IGameSettings settings;
+
+	// Level manager and tiles variables
+	private ILevelManager levels;
+	
+	// New hud object
+	private Hud hud;
+	
+	@Override
+	public void create() {
+		// Logs events
+<span class="nc" id="L40">		Gdx.app.log(&quot;GG-Clone&quot;, &quot;started&quot;);</span>
+		
+		// Batch shared. 
+<span class="nc" id="L43">		batch = new SpriteBatch();</span>
+		
+		// Get settings
+<span class="nc" id="L46">		settings = new GameSettings();</span>
+		
+		// Set game speed
+<span class="nc" id="L49">		PPM = settings.getGameSpeed();</span>
+
+		// Sound/music manager
+<span class="nc" id="L52">		audio = new Audio(settings);</span>
+
+		// Level manager
+<span class="nc" id="L55">		levels = new LevelManager();</span>
+
+		// Make hud object
+<span class="nc" id="L58">		hud = new Hud(batch, levels.getCurrentLevelNumber());</span>
+
+		// Set/change to main screen.
+<span class="nc" id="L61">		changeScreen(new MainScreen(this, batch, levels, hud, audio));	</span>
+<span class="nc" id="L62">	}</span>
+	
+    /**
+     * Change screen.
+     *
+     * @param screen the screen
+     */
+    private void changeScreen(Screen screen) {
+<span class="nc" id="L70">    	currentScreen = screen;</span>
+<span class="nc" id="L71">        setScreen(currentScreen);</span>
+<span class="nc" id="L72">        }</span>
+	
+    @Override
+    public void render() {
+    	// Calls method from game class that renders screen.
+<span class="nc" id="L77">    	super.render();</span>
+<span class="nc" id="L78">    }    </span>
+    
+    @Override
+    public void dispose() {
+<span class="nc" id="L82">    }</span>
+
+	/**
+	 * Sets the speed.
+	 *
+	 * @param value the new speed
+	 */
+	public void setSpeed(float value) {
+<span class="nc" id="L90">		PPM = value;</span>
+<span class="nc" id="L91">	}</span>
+	
+	/**
+	 * Gets the speed.
+	 *
+	 * @return the speed
+	 */
+	public float getSpeed() {
+<span class="nc" id="L99">		return PPM;</span>
+	}	
+	
+	/**
+	 * Gets the audio.
+	 *
+	 * @return the audio
+	 */
+	public IAudio getAudio() {
+<span class="nc" id="L108">		return audio;</span>
+		}
+
+	/**
+	 * Gets the settings.
+	 *
+	 * @return the settings
+	 */
+	public IGameSettings getSettings() {
+<span class="fc" id="L117">		return settings;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

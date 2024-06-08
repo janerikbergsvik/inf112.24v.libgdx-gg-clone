@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayScreen.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gdx-2dgame</a> &gt; <a href="index.source.html" class="el_package">inf112.core.app.View.GameScreens</a> &gt; <span class="el_source">PlayScreen.java</span></div><h1>PlayScreen.java</h1><pre class="source lang-java linenums">package inf112.core.app.View.GameScreens;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+
+import inf112.core.app.Main;
+import inf112.core.app.MainGame;
+import inf112.core.app.Controller.GameController;
+import inf112.core.app.Controller.IGameController;
+import inf112.core.app.Helper.IAudio;
+import inf112.core.app.Helper.ILevelManager;
+import inf112.core.app.Model.GameModel;
+import inf112.core.app.Model.IGameModel;
+import inf112.core.app.View.GameRenderer;
+import inf112.core.app.View.IGameRenderer;
+    
+/**
+ * The Class PlayScreen.
+ * This is the Model-View-Controller. Here the
+ * IGameModel, IGameRenderer and IGameController are controlled.
+ */
+public class PlayScreen implements Screen{
+    // Model - View - Controller
+    private IGameModel model;
+	private IGameRenderer renderer;
+	private IGameController controller;
+	
+	/**
+	 * Instantiates a new play screen.
+	 *
+	 * @param game the game
+	 * @param audio the audio
+	 * @param levels the levels
+	 * @param hud the hud
+	 * @param batch the batch
+	 */
+<span class="nc" id="L40">	public PlayScreen(MainGame game, IAudio audio, ILevelManager levels, IHud hud, Batch batch) {</span>
+	    // Model - View - Controller		
+<span class="nc" id="L42">	    model = new GameModel(game, audio, levels, hud, batch, Main.WINDOW_WIDTH, Main.WINDOW_WIDTH);</span>
+<span class="nc" id="L43">	    renderer = new GameRenderer(model, batch, hud);</span>
+<span class="nc" id="L44">	    controller = new GameController(game, model, batch, levels, hud, audio);</span>
+	    
+		// New stage.
+<span class="nc" id="L47">		Gdx.input.setInputProcessor(renderer.getStage());</span>
+		
+		// Start background music
+<span class="nc" id="L50">		audio.startMusic();</span>
+<span class="nc" id="L51">	}</span>
+	
+	@Override
+	public void show() {
+<span class="nc" id="L55">	}</span>
+
+	@Override
+	public void render(float delta) {
+		// MODEL - VIEW - CONTROLLER
+		// Update sequence below:
+		// 1. Controller updates player based on controller input.
+<span class="nc" id="L62">		controller.handleInput(delta);</span>
+		
+		// 2. Model is updated.
+<span class="nc" id="L65">		model.update(delta);</span>
+
+		// 3. Everything is rendered.
+<span class="nc" id="L68">		renderer.render();		</span>
+<span class="nc" id="L69">	}</span>
+	
+	@Override
+	public void resize(int width, int height) {
+<span class="nc" id="L73">		renderer.resize(width, height);</span>
+<span class="nc" id="L74">	}</span>
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+<span class="nc" id="L79">	}</span>
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+<span class="nc" id="L84">	}</span>
+
+	@Override
+	public void hide() {
+		// TODO Auto-generated method stub
+<span class="nc" id="L89">	}</span>
+
+	@Override
+	public void dispose() {
+<span class="nc" id="L93">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

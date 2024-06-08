@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gdx-2dgame</a> &gt; <a href="index.source.html" class="el_package">inf112.core.app.Model</a> &gt; <span class="el_source">GameModel.java</span></div><h1>GameModel.java</h1><pre class="source lang-java linenums">package inf112.core.app.Model;
+
+import java.util.concurrent.LinkedBlockingQueue;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
+
+import inf112.core.app.MainGame;
+import inf112.core.app.Characters.GianaPlayer;
+import inf112.core.app.Characters.IEnemy;
+import inf112.core.app.Characters.IPlayer;
+import inf112.core.app.Characters.IProjectile;
+import inf112.core.app.Helper.IAudio;
+import inf112.core.app.Helper.ILevelManager;
+import inf112.core.app.Helper.ObjectListener;
+import inf112.core.app.Helper.PhysicsWorldCreator;
+import inf112.core.app.PopUpItems.Ball;
+import inf112.core.app.PopUpItems.Clock;
+import inf112.core.app.PopUpItems.DoubleLightning;
+import inf112.core.app.PopUpItems.IPopUpItem;
+import inf112.core.app.PopUpItems.PopUpFactoryDef;
+import inf112.core.app.PopUpItems.SingleLightning;
+import inf112.core.app.View.GameScreens.Hud;
+import inf112.core.app.View.GameScreens.IHud;
+import inf112.core.app.View.GameScreens.StageIntroScreen;
+import inf112.core.app.View.MenuScreens.CompletedScreen;
+import inf112.core.app.View.MenuScreens.GameOverScreen;
+
+/**
+ * The Class GameModel.
+ * The model part of the Model-view-controller.
+ */
+public class GameModel implements IGameModel {
+	// Batch
+	private Batch batch;
+	
+	// Level manager and tiles map variables
+	private TiledMap map;
+	private ILevelManager levels;
+	
+	// Hud
+	private IHud hud;
+	
+	// Textures for player- and enemies
+	private TextureAtlas atlas;
+	private TextureAtlas powerups;
+	
+    // Box2d physics
+	private World world;
+	private PhysicsWorldCreator creator;
+    
+    // Player character
+	private IPlayer player;
+	
+	// Bullet
+	private Array&lt;IProjectile&gt; bullets;		
+	
+	// Popup items
+    private Array&lt;IPopUpItem&gt; popUpItems;
+    private LinkedBlockingQueue&lt;PopUpFactoryDef&gt; itemsToSpawn;    
+    
+    // Maingame itself.
+	private MainGame game;
+
+	// Audio from MainGame
+	private IAudio audio;
+
+	
+ /**
+  * Instantiates a new game model.
+  *
+  * @param game the MainGame
+  * @param audio the audio
+  * @param levels the levels
+  * @param hud the hud
+  * @param batch the batch
+  * @param width the width
+  * @param height the height
+  */
+<span class="fc" id="L85"> public GameModel(MainGame game, IAudio audio, ILevelManager levels, IHud hud, Batch batch, float width, float height) { 	</span>
+	// Retrieve MainGame
+<span class="fc" id="L87">	this.game = game;</span>
+<span class="fc" id="L88">	this.audio = audio;</span>
+<span class="fc" id="L89">	this.levels = levels;</span>
+<span class="fc" id="L90">	this.hud = hud;</span>
+<span class="fc" id="L91">	this.batch = batch;</span>
+		 
+	// Get current level
+<span class="fc" id="L94">	map = levels.getCurrentLevel();	</span>
+	
+	// Load sisters and enemies pack.
+<span class="fc" id="L97">    atlas = new TextureAtlas(Gdx.files.internal(&quot;textures/sisters_and_enemies/sisters_and_enemies.pack&quot;)); </span>
+    
+    // Load power-up pack.
+<span class="fc" id="L100">    powerups = new TextureAtlas(Gdx.files.internal(&quot;textures/powerups/powerups.atlas&quot;));   </span>
+
+    // Create a world with gravity.
+<span class="fc" id="L103">	world = new World(new Vector2(0,-9.81f), true);</span>
+
+    // Set contact listener.
+<span class="fc" id="L106">    world.setContactListener(new ObjectListener());    </span>
+    
+    // Popup items
+<span class="fc" id="L109">    popUpItems = new Array&lt;IPopUpItem&gt;();</span>
+<span class="fc" id="L110">    itemsToSpawn = new LinkedBlockingQueue&lt;PopUpFactoryDef&gt;();</span>
+    
+    // Create bullets    
+<span class="fc" id="L113">    bullets = new Array&lt;IProjectile&gt;();   </span>
+    
+    // Create Giana player &amp; Physics world.
+<span class="fc" id="L116">    player = new GianaPlayer(world, atlas, bullets);</span>
+<span class="fc" id="L117">	creator = new PhysicsWorldCreator(itemsToSpawn, hud, atlas, player, world, map, audio);        	</span>
+<span class="fc" id="L118"> }</span>
+
+/**
+ * Handle spawning items.
+ */
+private void handleSpawningItems() {
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">	 if(!itemsToSpawn.isEmpty()) {</span>
+<span class="nc" id="L125">		 PopUpFactoryDef idef = itemsToSpawn.poll();</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">		 if(idef.type == Clock.class) {</span>
+<span class="nc" id="L127">			 popUpItems.add(new Clock(player, world, hud, powerups, idef.position.x, idef.position.y));</span>
+		 }
+<span class="nc bnc" id="L129" title="All 2 branches missed.">		 if(idef.type == SingleLightning.class) {</span>
+<span class="nc" id="L130">			 popUpItems.add(new SingleLightning(player, world, hud, powerups, idef.position.x, idef.position.y));</span>
+		 }
+<span class="nc bnc" id="L132" title="All 2 branches missed.">		 if(idef.type == DoubleLightning.class) {</span>
+<span class="nc" id="L133">			 popUpItems.add(new DoubleLightning(player, world, hud, powerups, idef.position.x, idef.position.y));			</span>
+		 }
+<span class="nc bnc" id="L135" title="All 2 branches missed.">		 if(idef.type == Ball.class) {</span>
+<span class="nc" id="L136">			popUpItems.add(new Ball(player, world, hud, powerups, idef.position.x, idef.position.y));			 			</span>
+		 }		 
+	 }
+<span class="fc" id="L139"> }</span>
+ 
+ @Override
+public void update(float delta) {
+	 // Model updates
+	 // Update hud
+<span class="fc" id="L145">	 hud.update(delta);</span>
+	 
+	 // Handle spawning pop-up items.
+<span class="fc" id="L148">	 handleSpawningItems();</span>
+	 
+	 // Takes a step in the physics simulation
+<span class="fc" id="L151">     world.step(1/60f, 6, 3);</span>
+  
+     // Here player states are handled;
+     // I.e. handling of out of health, life reduction, redirection to completion of level, game over,
+     // time out, etc.
+<span class="fc" id="L156">     handlePlayerStates();</span>
+     
+     // Update player position- and texture based on player state.
+<span class="fc" id="L159">     player.update(delta);</span>
+
+     // Update enemies
+<span class="fc bfc" id="L162" title="All 2 branches covered.">	 for(IEnemy enemy : creator.getEnemies())</span>
+<span class="fc" id="L163">	 	enemy.update(delta);</span>
+     
+	 // Update bullets
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">     if (bullets != null) {</span>
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">     	for(IProjectile bullet : bullets) {</span>
+<span class="nc" id="L168">             bullet.update(delta);</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">             if(bullet.isScheduledForRemoval())</span>
+<span class="nc" id="L170">                 bullets.removeValue(bullet, true);</span>
+<span class="nc" id="L171">         }	</span>
+     }     
+     
+     // Update popupitems
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">     if (popUpItems != null) {</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">      	for(IPopUpItem item : popUpItems) {</span>
+<span class="nc" id="L177">              item.update(delta);</span>
+<span class="nc" id="L178">          }	</span>
+      }     
+<span class="fc" id="L180"> }</span>
+
+@Override
+public PhysicsWorldCreator getCreator(){
+<span class="nc" id="L184">	return creator;</span>
+ }
+
+
+@Override
+public IPlayer getPlayer() {
+<span class="fc" id="L190">     return player;</span>
+ }
+
+@Override
+public TiledMap getMap() {
+<span class="nc" id="L195">	return map;</span>
+}
+
+@Override
+public Array&lt;IProjectile&gt; getBullets() {
+<span class="nc" id="L200">	return bullets;	</span>
+}
+
+@Override
+public Array&lt;IPopUpItem&gt; getPopUpItems() {
+<span class="nc" id="L205">	return popUpItems;</span>
+}
+
+@Override
+public IHud getHud() {
+<span class="nc" id="L210">	return hud;</span>
+	
+}
+
+/**
+ * Handle player states.
+ */
+private void handlePlayerStates() {
+    // If time is up, then set player health to zero.
+    // Next part will handle if lives left, etc.
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">    if (hud.isTimeOut()) {</span>
+<span class="fc" id="L221">    	player.applyHealthChange(-99999);</span>
+<span class="fc" id="L222">    	Gdx.app.log(&quot;Player is out of time. Health set to zero.&quot;, &quot;&quot;);</span>
+     }
+ 
+    // If player is dead and out of lives, go to game over screen.
+    // Else reduce lives and retry at same level.
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">    if (player.isDead()) {</span>
+<span class="fc" id="L228">   	 hud.changeLives(-1);</span>
+<span class="fc" id="L229">	 audio.playDied();</span>
+   	 
+<span class="fc bfc" id="L231" title="All 2 branches covered.">   	 if (hud.isOutOfLives()) {</span>
+<span class="fc" id="L232">   		 Gdx.app.log(&quot;Player is dead and out of lives. Game over.&quot;, &quot;&quot;);</span>
+<span class="fc" id="L233">       	 levels.reset();</span>
+<span class="fc" id="L234">         game.getSettings().setHighScore(hud.getScore());</span>
+<span class="fc" id="L235">         hud.changeLevel(-9999);</span>
+<span class="fc" id="L236">		 hud.changeTime(-9999);</span>
+<span class="fc" id="L237">		 hud.changeTime(300);</span>
+<span class="fc" id="L238">		 hud.changeLives(3);</span>
+<span class="fc" id="L239">  		 game.setScreen(new GameOverScreen(game, batch, levels, hud, audio));  		            </span>
+   	 }
+   	 else {
+<span class="fc" id="L242">   		 Gdx.app.log(&quot;Player has more lives, retry stage&quot;, &quot;&quot;);</span>
+<span class="fc" id="L243">   		 game.getSettings().setHighScore(hud.getScore());</span>
+<span class="fc" id="L244">   		 hud.resetScore();</span>
+<span class="fc" id="L245">   		 game.setScreen(new StageIntroScreen(game, batch, levels, hud, audio));</span>
+   	 }
+    }
+    
+    // Player has completed a level
+<span class="fc bfc" id="L250" title="All 2 branches covered.">    if (player.hasCompletedLevel()) {</span>
+<span class="fc" id="L251">	   	player.setCompletedLevel(false);</span>
+<span class="fc" id="L252">	   	game.getSettings().setHighScore(hud.getScore());</span>
+<span class="fc" id="L253">	   	Gdx.app.log(&quot;Player has completed level.&quot;, &quot;&quot;);</span>
+	   	 
+	   	// Go to next level
+<span class="pc bpc" id="L256" title="1 of 2 branches missed.">	    if (levels.nextLevelAvailable()) {</span>
+<span class="fc" id="L257">	     		Gdx.app.log(&quot;Completed level. Go to next level.&quot;, &quot;&quot;);</span>
+<span class="fc" id="L258">	     		levels.nextLevel();</span>
+<span class="fc" id="L259">				hud.changeLevel(1);</span>
+<span class="fc" id="L260">				hud.changeTime(-9999);</span>
+<span class="fc" id="L261">				hud.changeTime(300);</span>
+<span class="fc" id="L262">				game.setScreen(new StageIntroScreen(game, batch, levels, hud, audio));</span>
+			}
+	     	
+     	// Levels have been completed.
+     	else {
+<span class="nc" id="L267">	     		levels.reset();</span>
+<span class="nc" id="L268">	     		hud.changeLevel(1);</span>
+<span class="nc" id="L269">				hud.changeTime(-9999);</span>
+<span class="nc" id="L270">				hud.changeTime(300);</span>
+<span class="nc" id="L271">				hud.changeLives(-9999);</span>
+<span class="nc" id="L272">				hud.changeLives(3);</span>
+<span class="nc" id="L273">				Gdx.app.log(&quot;No more levels available. Completed game.&quot;, &quot;&quot;);</span>
+<span class="nc" id="L274">	     		game.setScreen(new CompletedScreen(game, batch, levels, hud, audio));        		</span>
+	     	}	
+	    }
+<span class="fc" id="L277">}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
