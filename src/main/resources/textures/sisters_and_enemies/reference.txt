@@ -1,0 +1,10 @@
+https://www.spriters-resource.com/submitter/GianaSistersFan64/
+
+Originally based on this; https://www.spriters-resource.com/nes/supermariobros/sheet/52571/
+
+Extracted tiles by Brent Aureli;
+
+https://github.com/BrentAureli/SuperMario/tree/master/android/assets
+
+https://www.spriters-resource.com/commodore_64/greatgianasisters/
+
