@@ -10,6 +10,9 @@ Echoing dreams is a Great Giana Sisters inspired 2d game developed during spring
 subject INF112 - Systems Engineering at the University of Bergen. The original game was developed for
 the Commodore 64 platform and developers have many good memories of it.
 
+Link to Windows binary installer: 
+[link](./binaries/Echoing_dreams-1.0_win64_installer.zip)
+
 ## Who made it?
 
 It was developed by DIGI-teamet consisting of the following team members:
