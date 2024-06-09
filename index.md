@@ -11,7 +11,7 @@ subject INF112 - Systems Engineering at the University of Bergen. The original g
 the Commodore 64 platform and developers have many good memories of it.
 
 Link to Windows binary installer: 
-[link](./binaries/Echoing_dreams-1.0_win64_installer.zip)
+[download link](./binaries/Echoing_dreams-1.0_win64_installer.zip)
 
 ## Who made it?
 
